@@ -18,23 +18,23 @@ variables:
 stages:
 - stage: DockerHubLogin
   displayName: Docker Hub Login
+  pool:
+    vmImage: 'Ubuntu 16.04'
   jobs:  
   - job: DockerHubLogin
     displayName: Docker Hub Login
     steps:
     - script: docker login -u $(dockerId) -p $(dockerPass)
 
-- stage: Buildingtheimage
-  displayName: Building image
+- stage: BuildingtheimageandTagging
+  displayName: Building image and Tagging
+  pool:
+    vmImage: 'Ubuntu 16.04'
   jobs:  
   - job: Buildingtheimage
     displayName: Building the docker image
     steps:
     - script: docker build -t $(image) $(Build.SourcesDirectory)
-
-- stage: Taggingtheimage
-  displayName: Tag the image
-  jobs:  
   - job: Taggingtheimage
     displayName: Tag the docker image
     steps:
@@ -42,6 +42,8 @@ stages:
 
 - stage: Pushtheimage
   displayName: Push the image to Docker Hub
+  pool:
+    vmImage: 'Ubuntu 16.04'
   jobs:  
   - job: Pushtheimage
     displayName: Push the docker image to Docker Hub
