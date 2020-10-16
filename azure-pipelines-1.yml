@@ -8,11 +8,12 @@ trigger:
 resources:
 - repo: self
 
+
 variables:
   tag: '$(Build.BuildId)'
   image: '$(dockerNamespace)/nodejsapp'
 
-  
+
 
 stages:
 - stage: DockerHubLogin
@@ -20,8 +21,6 @@ stages:
   jobs:  
   - job: DockerHubLogin
     displayName: Docker Hub Login
-    pool:
-      vmImage: 'ubuntu-latest'
     steps:
     - script: docker login -u $(dockerId) -p $(dockerPass)
 
@@ -30,8 +29,6 @@ stages:
   jobs:  
   - job: Buildingtheimage
     displayName: Building the docker image
-    pool:
-      vmImage: 'ubuntu-latest'
     steps:
     - script: docker build -t $(image) $(Build.SourcesDirectory)
 
@@ -40,8 +37,6 @@ stages:
   jobs:  
   - job: Taggingtheimage
     displayName: Tag the docker image
-    pool:
-      vmImage: 'ubuntu-latest'
     steps:
     - script: docker tag $(image) $(image):$(tag)
 
@@ -50,7 +45,5 @@ stages:
   jobs:  
   - job: Pushtheimage
     displayName: Push the docker image to Docker Hub
-    pool:
-      vmImage: 'ubuntu-latest'
     steps:
     - script: docker push $(image):$(tag)
