@@ -36,6 +36,7 @@ stages:
     steps:
     - script: docker build -t $(image) $(Build.SourcesDirectory)
   - job: Taggingtheimage
+    dependsOn: Buildingtheimage
     displayName: Tag the docker image
     steps:
     - script: docker tag $(image) $(image):$(tag)
