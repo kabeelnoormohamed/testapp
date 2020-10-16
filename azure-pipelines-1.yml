@@ -10,7 +10,6 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
-  app: testapp
   image: '$(dockerNamespace)/nodejsapp'
 
   
@@ -34,7 +33,7 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - script: docker build -t $(image) $(app)
+    - script: docker build -t $(image) $(Build.SourcesDirectory)
 
 - stage: Taggingtheimage
   displayName: Tag the image
