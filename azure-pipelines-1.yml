@@ -10,21 +10,48 @@ resources:
 
 variables:
   tag: '$(Build.BuildId)'
+  app: testapp
+  image: '$(dockerNamespace)/nodejsapp'
+
   
 
 stages:
-- stage: Build
-  displayName: Build image
+- stage: DockerHubLogin
+  displayName: Docker Hub Login
   jobs:  
-  - job: Build
-    displayName: Build
+  - job: DockerHubLogin
+    displayName: Docker Hub Login
     pool:
       vmImage: 'ubuntu-latest'
     steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile'
-        tags: |
-          $(tag)
+    - script: docker login -u $(dockerId) -p $(dockerPass)
+
+- stage: Buildingtheimage
+  displayName: Building image
+  jobs:  
+  - job: Buildingtheimage
+    displayName: Building the docker image
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: docker build -t $(image) $(app)
+
+- stage: Taggingtheimage
+  displayName: Tag the image
+  jobs:  
+  - job: Taggingtheimage
+    displayName: Tag the docker image
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: docker tag $(image) $(image):$(tag)
+
+- stage: Pushtheimage
+  displayName: Push the image to Docker Hub
+  jobs:  
+  - job: Pushtheimage
+    displayName: Push the docker image to Docker Hub
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: docker push $(image):$(tag)
